@@ -21,12 +21,12 @@ class MainScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _EventButton(
-                          text: "Close",
+                          text: 'Close',
                         ),
                       ),
                       Expanded(
                         child: _EventButton(
-                          text: "Reload",
+                          text: 'Reload',
                         ),
                       ),
                     ],
@@ -40,7 +40,6 @@ class MainScreen extends StatelessWidget {
     );
   }
 }
-
 
 class _WeatherForecastResult extends StatelessWidget {
   const _WeatherForecastResult();
@@ -78,34 +77,34 @@ class _WeatherImage extends StatelessWidget {
 }
 
 class _TemperatureText extends StatelessWidget {
-  const _TemperatureText({required this.color});
+  const _TemperatureText({required Color color}) : _color = color;
 
-  final Color color;
+  final Color _color;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Text(
-        "** ℃",
+        '** ℃',
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(color: color),
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _color),
       ),
     );
   }
 }
 
 class _EventButton extends StatelessWidget {
-  const _EventButton({required this.text});
+  const _EventButton({required String text}) : _text = text;
 
-  final String text;
+  final String _text;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {},
       child: Text(
-        text,
+        _text,
         style: const TextStyle(
           color: Colors.blue,
         ),
