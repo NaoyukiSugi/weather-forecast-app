@@ -15,6 +15,7 @@ dependencies:
       url: https://github.com/yumemi-inc/flutter-training-template.git
       ref: main
       path: packages/yumemi_weather
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
