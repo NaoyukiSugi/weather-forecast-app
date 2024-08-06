@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/gen/assets.gen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -69,9 +71,9 @@ class _WeatherImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AspectRatio(
+    return AspectRatio(
       aspectRatio: 1 / 1,
-      child: Placeholder(),
+      child: SvgPicture.asset(Assets.images.sunny),
     );
   }
 }
