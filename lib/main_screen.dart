@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return const Scaffold(
       body: Center(
         child: FractionallySizedBox(
@@ -43,11 +44,11 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-class _WeatherForecastResult extends StatelessWidget {
+class _WeatherForecastResult extends ConsumerWidget {
   const _WeatherForecastResult();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return const Column(
       children: [
         _WeatherImage(),
@@ -66,11 +67,11 @@ class _WeatherForecastResult extends StatelessWidget {
   }
 }
 
-class _WeatherImage extends StatelessWidget {
+class _WeatherImage extends ConsumerWidget {
   const _WeatherImage();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: SvgPicture.asset(Assets.images.sunny),
@@ -78,13 +79,13 @@ class _WeatherImage extends StatelessWidget {
   }
 }
 
-class _TemperatureText extends StatelessWidget {
+class _TemperatureText extends ConsumerWidget {
   const _TemperatureText({required Color color}) : _color = color;
 
   final Color _color;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Text(
@@ -96,13 +97,13 @@ class _TemperatureText extends StatelessWidget {
   }
 }
 
-class _EventButton extends StatelessWidget {
+class _EventButton extends ConsumerWidget {
   const _EventButton({required String text}) : _text = text;
 
   final String _text;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TextButton(
       onPressed: () {},
       child: Text(
