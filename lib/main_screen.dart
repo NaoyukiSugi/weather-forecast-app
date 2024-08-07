@@ -1,40 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_training/weather_provider.dart';
-import 'package:flutter_training/weather_type.dart';
+import 'package:flutter_training/gen/assets.gen.dart';
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: FractionallySizedBox(
           widthFactor: 0.5,
           child: Column(
             children: [
-              const Spacer(),
-              const _WeatherForecastResult(),
+              Spacer(),
+              _WeatherForecastResult(),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 80),
+                  padding: EdgeInsets.only(top: 80),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: _EventButton(
                           text: 'Close',
-                          onPressed: () {},
                         ),
                       ),
                       Expanded(
                         child: _EventButton(
                           text: 'Reload',
-                          onPressed: () {
-                            ref.read(weatherProvider.notifier).fetchWeather();
-                          },
                         ),
                       ),
                     ],
@@ -77,10 +72,9 @@ class _WeatherImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weatherType = ref.watch(weatherProvider);
     return AspectRatio(
       aspectRatio: 1 / 1,
-      child: SvgPicture.asset(weatherType.assetPath),
+      child: SvgPicture.asset(Assets.images.sunny),
     );
   }
 }
@@ -104,17 +98,14 @@ class _TemperatureText extends ConsumerWidget {
 }
 
 class _EventButton extends ConsumerWidget {
-  const _EventButton({required String text, required void Function() onPressed})
-      : _onPressed = onPressed,
-        _text = text;
+  const _EventButton({required String text}) : _text = text;
 
   final String _text;
-  final VoidCallback _onPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return TextButton(
-      onPressed: _onPressed,
+      onPressed: () {},
       child: Text(
         _text,
         style: const TextStyle(
