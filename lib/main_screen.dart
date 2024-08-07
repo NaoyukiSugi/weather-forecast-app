@@ -1,34 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_training/gen/assets.gen.dart';
+import 'package:flutter_training/weather_repository.dart';
+import 'package:flutter_training/weather_type.dart';
+import 'package:yumemi_weather/yumemi_weather.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
+  State<StatefulWidget> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final WeatherRepository _repository = WeatherRepository(YumemiWeather());
+  WeatherType _weatherType = WeatherType.sunny;
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: FractionallySizedBox(
           widthFactor: 0.5,
           child: Column(
             children: [
-              Spacer(),
-              _WeatherForecastResult(),
+              const Spacer(),
+              _WeatherForecastResult(weatherType: _weatherType),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 80),
+                  padding: const EdgeInsets.only(top: 80),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: _EventButton(
                           text: 'Close',
+                          onPressed: () {},
                         ),
                       ),
                       Expanded(
                         child: _EventButton(
                           text: 'Reload',
+                          onPressed: _fetchWeather,
                         ),
                       ),
                     ],
@@ -41,17 +53,32 @@ class MainScreen extends StatelessWidget {
       ),
     );
   }
+
+  void _fetchWeather() {
+    setState(() {
+      final weather = _repository.fetchWeather();
+      _weatherType = WeatherType.values.firstWhere(
+        (element) {
+          return element.name == weather;
+        },
+        orElse: () => WeatherType.undefined,
+      );
+    });
+  }
 }
 
 class _WeatherForecastResult extends StatelessWidget {
-  const _WeatherForecastResult();
+  const _WeatherForecastResult({required WeatherType weatherType})
+      : _weatherType = weatherType;
+
+  final WeatherType _weatherType;
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        _WeatherImage(),
-        Row(
+        _WeatherImage(weatherType: _weatherType),
+        const Row(
           children: [
             Expanded(
               child: _TemperatureText(color: Colors.blue),
@@ -67,14 +94,23 @@ class _WeatherForecastResult extends StatelessWidget {
 }
 
 class _WeatherImage extends StatelessWidget {
-  const _WeatherImage();
+  const _WeatherImage({required WeatherType weatherType})
+      : _weatherType = weatherType;
+
+  final WeatherType _weatherType;
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1 / 1,
-      child: SvgPicture.asset(Assets.images.sunny),
-    );
+    return switch (_weatherType) {
+      WeatherType.sunny ||
+      WeatherType.cloudy ||
+      WeatherType.rainy =>
+        AspectRatio(
+          aspectRatio: 1 / 1,
+          child: SvgPicture.asset(_weatherType.assetPath),
+        ),
+      WeatherType.undefined => const Placeholder(),
+    };
   }
 }
 
@@ -97,14 +133,17 @@ class _TemperatureText extends StatelessWidget {
 }
 
 class _EventButton extends StatelessWidget {
-  const _EventButton({required String text}) : _text = text;
+  const _EventButton({required String text, required void Function() onPressed})
+      : _onPressed = onPressed,
+        _text = text;
 
   final String _text;
+  final VoidCallback _onPressed;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: _onPressed,
       child: Text(
         _text,
         style: const TextStyle(
