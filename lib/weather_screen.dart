@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/weather_repository.dart';
 import 'package:flutter_training/weather_type.dart';
@@ -31,10 +32,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: _EventButton(
                           text: 'Close',
-                          onPressed: () {},
+                          onPressed: SystemNavigator.pop,
                         ),
                       ),
                       Expanded(
