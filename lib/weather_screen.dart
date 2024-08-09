@@ -4,14 +4,14 @@ import 'package:flutter_training/weather_repository.dart';
 import 'package:flutter_training/weather_type.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class WeatherScreen extends StatefulWidget {
+  const WeatherScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _MainScreenState();
+  State<StatefulWidget> createState() => _WeatherScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherRepository _repository = WeatherRepository(YumemiWeather());
   WeatherType _weatherType = WeatherType.sunny;
 
@@ -34,7 +34,9 @@ class _MainScreenState extends State<MainScreen> {
                       Expanded(
                         child: _EventButton(
                           text: 'Close',
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
                         ),
                       ),
                       Expanded(
