@@ -10,7 +10,7 @@ class SplashScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with RouteAware {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
@@ -22,33 +22,15 @@ class _SplashScreenState extends State<SplashScreen> with RouteAware {
     );
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final modalRoute = ModalRoute.of(context);
-    if (modalRoute != null && modalRoute is PageRoute) {
-      routeObserver.subscribe(this, modalRoute);
-    }
-  }
-
-  @override
-  void dispose() {
-    routeObserver.unsubscribe(this);
-    super.dispose();
-  }
-
-  @override
-  void didPopNext() {
-    unawaited(_navigateToWeatherScreenAfterDelay());
-  }
-
   Future<void> _navigateToWeatherScreenAfterDelay() async {
     await Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
         Navigator.push(
           context,
           MaterialPageRoute<void>(builder: (context) => const WeatherScreen()),
-        );
+        ).then((_) {
+          _navigateToWeatherScreenAfterDelay();
+        });
       }
     });
   }
