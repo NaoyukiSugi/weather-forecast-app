@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_training/after_layout_mixin.dart';
 import 'package:flutter_training/weather_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -9,15 +10,16 @@ class SplashScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with AfterLayoutMixin {
   @override
-  void initState() {
-    super.initState();
+  void afterFirstLayout() {
+    unawaited(_navigateToWeatherScreenAfterDelay());
+  }
 
-    unawaited(
-      WidgetsBinding.instance.endOfFrame.then((_) {
-        _navigateToWeatherScreenAfterDelay();
-      }),
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.green,
     );
   }
 
@@ -32,12 +34,5 @@ class _SplashScreenState extends State<SplashScreen> {
         });
       }
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.green,
-    );
   }
 }
