@@ -17,9 +17,7 @@ class _SplashScreenState extends State<SplashScreen> with RouteAware {
 
     unawaited(
       WidgetsBinding.instance.endOfFrame.then((_) {
-        if (mounted) {
-          _navigateToWeatherScreenAfterDelay();
-        }
+        _navigateToWeatherScreenAfterDelay();
       }),
     );
   }
@@ -46,10 +44,12 @@ class _SplashScreenState extends State<SplashScreen> with RouteAware {
 
   Future<void> _navigateToWeatherScreenAfterDelay() async {
     await Future.delayed(const Duration(milliseconds: 500), () {
-      Navigator.push(
-        context,
-        MaterialPageRoute<void>(builder: (context) => const WeatherScreen()),
-      );
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(builder: (context) => const WeatherScreen()),
+        );
+      }
     });
   }
 
