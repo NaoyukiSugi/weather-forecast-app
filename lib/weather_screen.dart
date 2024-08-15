@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/weather_repository.dart';
@@ -58,15 +59,37 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   void _fetchWeather() {
     setState(() {
-      final weather = _repository.fetchWeather();
-      _weatherType = WeatherType.values.firstWhere(
-        (element) {
-          return element.name == weather;
-        },
-        orElse: () => WeatherType.undefined,
-      );
+      try {
+        final weather = _repository.fetchWeather();
+        _weatherType = WeatherType.values.firstWhere(
+          (element) {
+            return element.name == weather;
+          },
+          orElse: () => WeatherType.undefined,
+        );
+      } on YumemiWeatherError catch (_) {
+        unawaited(_showErrorDialog(context));
+      }
     });
   }
+}
+
+Future<void> _showErrorDialog(BuildContext context) async {
+  await showDialog<void>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('エラー'),
+        content: const Text('エラーが発生しました'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
 }
 
 class _WeatherForecastResult extends StatelessWidget {
