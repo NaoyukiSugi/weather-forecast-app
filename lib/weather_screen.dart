@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/weather_info.dart';
 import 'package:flutter_training/weather_repository.dart';
 import 'package:flutter_training/weather_type.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -14,7 +15,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherRepository _repository = WeatherRepository(YumemiWeather());
-  WeatherType _weatherType = WeatherType.undefined;
+  WeatherInfo? _weatherInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherForecastResult(weatherType: _weatherType),
+              _WeatherForecastResult(weatherInfo: _weatherInfo),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 80),
@@ -60,13 +61,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void _fetchWeather() {
     setState(() {
       try {
-        final weather = _repository.fetchWeather();
-        _weatherType = WeatherType.values.firstWhere(
-          (element) {
-            return element.name == weather;
-          },
-          orElse: () => WeatherType.undefined,
-        );
+        _weatherInfo = _repository.fetchWeather();
       } on YumemiWeatherError catch (_) {
         unawaited(_showErrorDialog(context));
       }
@@ -93,23 +88,29 @@ Future<void> _showErrorDialog(BuildContext context) async {
 }
 
 class _WeatherForecastResult extends StatelessWidget {
-  const _WeatherForecastResult({required WeatherType weatherType})
-      : _weatherType = weatherType;
+  const _WeatherForecastResult({required WeatherInfo? weatherInfo})
+      : _weatherInfo = weatherInfo;
 
-  final WeatherType _weatherType;
+  final WeatherInfo? _weatherInfo;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _WeatherImage(weatherType: _weatherType),
-        const Row(
+        _WeatherImage(weatherType: _weatherInfo?.weatherType),
+        Row(
           children: [
             Expanded(
-              child: _TemperatureText(color: Colors.blue),
+              child: _TemperatureText(
+                color: Colors.blue,
+                temperature: _weatherInfo?.minTemperature,
+              ),
             ),
             Expanded(
-              child: _TemperatureText(color: Colors.red),
+              child: _TemperatureText(
+                color: Colors.red,
+                temperature: _weatherInfo?.maxTemperature,
+              ),
             ),
           ],
         ),
@@ -119,37 +120,40 @@ class _WeatherForecastResult extends StatelessWidget {
 }
 
 class _WeatherImage extends StatelessWidget {
-  const _WeatherImage({required WeatherType weatherType})
+  const _WeatherImage({required WeatherType? weatherType})
       : _weatherType = weatherType;
 
-  final WeatherType _weatherType;
+  final WeatherType? _weatherType;
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: switch (_weatherType) {
+        WeatherType.undefined || null => const Placeholder(),
         WeatherType.sunny ||
         WeatherType.cloudy ||
         WeatherType.rainy =>
           SvgPicture.asset(_weatherType.assetPath),
-        WeatherType.undefined => const Placeholder(),
       },
     );
   }
 }
 
 class _TemperatureText extends StatelessWidget {
-  const _TemperatureText({required Color color}) : _color = color;
+  const _TemperatureText({required Color color, required int? temperature})
+      : _color = color,
+        _temperature = temperature;
 
   final Color _color;
+  final int? _temperature;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Text(
-        '** ℃',
+        '${_temperature ?? '**'} ℃',
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _color),
       ),
