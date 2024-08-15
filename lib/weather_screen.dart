@@ -13,7 +13,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherRepository _repository = WeatherRepository(YumemiWeather());
-  WeatherType _weatherType = WeatherType.sunny;
+  WeatherType _weatherType = WeatherType.undefined;
 
   @override
   Widget build(BuildContext context) {
@@ -103,16 +103,16 @@ class _WeatherImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return switch (_weatherType) {
-      WeatherType.sunny ||
-      WeatherType.cloudy ||
-      WeatherType.rainy =>
-        AspectRatio(
-          aspectRatio: 1 / 1,
-          child: SvgPicture.asset(_weatherType.assetPath),
-        ),
-      WeatherType.undefined => const Placeholder(),
-    };
+    return AspectRatio(
+      aspectRatio: 1 / 1,
+      child: switch (_weatherType) {
+        WeatherType.sunny ||
+        WeatherType.cloudy ||
+        WeatherType.rainy =>
+          SvgPicture.asset(_weatherType.assetPath),
+        WeatherType.undefined => const Placeholder(),
+      },
+    );
   }
 }
 
