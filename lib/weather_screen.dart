@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/weather_repository.dart';
@@ -13,7 +14,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherRepository _repository = WeatherRepository(YumemiWeather());
-  WeatherType _weatherType = WeatherType.sunny;
+  WeatherType _weatherType = WeatherType.undefined;
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +59,37 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   void _fetchWeather() {
     setState(() {
-      final weather = _repository.fetchWeather();
-      _weatherType = WeatherType.values.firstWhere(
-        (element) {
-          return element.name == weather;
-        },
-        orElse: () => WeatherType.undefined,
-      );
+      try {
+        final weather = _repository.fetchWeather();
+        _weatherType = WeatherType.values.firstWhere(
+          (element) {
+            return element.name == weather;
+          },
+          orElse: () => WeatherType.undefined,
+        );
+      } on YumemiWeatherError catch (_) {
+        unawaited(_showErrorDialog(context));
+      }
     });
   }
+}
+
+Future<void> _showErrorDialog(BuildContext context) async {
+  await showDialog<void>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('エラー'),
+        content: const Text('エラーが発生しました'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
 }
 
 class _WeatherForecastResult extends StatelessWidget {
@@ -103,16 +126,16 @@ class _WeatherImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return switch (_weatherType) {
-      WeatherType.sunny ||
-      WeatherType.cloudy ||
-      WeatherType.rainy =>
-        AspectRatio(
-          aspectRatio: 1 / 1,
-          child: SvgPicture.asset(_weatherType.assetPath),
-        ),
-      WeatherType.undefined => const Placeholder(),
-    };
+    return AspectRatio(
+      aspectRatio: 1 / 1,
+      child: switch (_weatherType) {
+        WeatherType.sunny ||
+        WeatherType.cloudy ||
+        WeatherType.rainy =>
+          SvgPicture.asset(_weatherType.assetPath),
+        WeatherType.undefined => const Placeholder(),
+      },
+    );
   }
 }
 
