@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_training/weather_info.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
@@ -13,6 +15,6 @@ class WeatherRepository {
       "date": "2020-04-01T12:00:00+09:00"
     }''';
     final response = _yumemiWeather.fetchWeather(jsonString);
-    return WeatherInfo.fromJson(response);
+    return WeatherInfo.fromJson(jsonDecode(response) as JsonMap);
   }
 }

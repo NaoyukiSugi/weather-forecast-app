@@ -97,7 +97,7 @@ class _WeatherForecastResult extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _WeatherImage(weatherType: _weatherInfo?.weatherType),
+        _WeatherImage(weatherCondition: _weatherInfo?.weatherCondition),
         Row(
           children: [
             Expanded(
@@ -120,21 +120,21 @@ class _WeatherForecastResult extends StatelessWidget {
 }
 
 class _WeatherImage extends StatelessWidget {
-  const _WeatherImage({required WeatherType? weatherType})
-      : _weatherType = weatherType;
+  const _WeatherImage({required WeatherCondition? weatherCondition})
+      : _weatherCondition = weatherCondition;
 
-  final WeatherType? _weatherType;
+  final WeatherCondition? _weatherCondition;
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1 / 1,
-      child: switch (_weatherType) {
-        WeatherType.undefined || null => const Placeholder(),
-        WeatherType.sunny ||
-        WeatherType.cloudy ||
-        WeatherType.rainy =>
-          SvgPicture.asset(_weatherType.assetPath),
+      child: switch (_weatherCondition) {
+        null => const Placeholder(),
+        WeatherCondition.sunny ||
+        WeatherCondition.cloudy ||
+        WeatherCondition.rainy =>
+          SvgPicture.asset(_weatherCondition.assetPath),
       },
     );
   }
