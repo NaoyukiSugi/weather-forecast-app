@@ -1,24 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_training/weather_info.dart';
-import 'package:flutter_training/weather_repository.dart';
+import 'package:flutter_training/weather_notifier.dart';
 import 'package:flutter_training/weather_type.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
-class WeatherScreen extends StatefulWidget {
+class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _WeatherScreenState();
-}
-
-class _WeatherScreenState extends State<WeatherScreen> {
-  final WeatherRepository _repository = WeatherRepository(YumemiWeather());
-  WeatherInfo? _weatherInfo;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
@@ -26,7 +18,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherForecastResult(weatherInfo: _weatherInfo),
+              const _WeatherForecastResult(),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 80),
@@ -44,7 +36,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       Expanded(
                         child: _EventButton(
                           text: 'Reload',
-                          onPressed: _fetchWeather,
+                          onPressed: () {
+                            try {
+                              ref
+                                  .read(weatherNotifierProvider.notifier)
+                                  .fetchWeather();
+                            } on YumemiWeatherError catch (_) {
+                              unawaited(_showErrorDialog(context));
+                            }
+                          },
                         ),
                       ),
                     ],
@@ -56,16 +56,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
       ),
     );
-  }
-
-  void _fetchWeather() {
-    setState(() {
-      try {
-        _weatherInfo = _repository.fetchWeather();
-      } on YumemiWeatherError catch (_) {
-        unawaited(_showErrorDialog(context));
-      }
-    });
   }
 }
 
@@ -87,29 +77,28 @@ Future<void> _showErrorDialog(BuildContext context) async {
   );
 }
 
-class _WeatherForecastResult extends StatelessWidget {
-  const _WeatherForecastResult({required WeatherInfo? weatherInfo})
-      : _weatherInfo = weatherInfo;
-
-  final WeatherInfo? _weatherInfo;
+class _WeatherForecastResult extends ConsumerWidget {
+  const _WeatherForecastResult();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weatherInfo = ref.watch(weatherNotifierProvider);
+
     return Column(
       children: [
-        _WeatherImage(weatherCondition: _weatherInfo?.weatherCondition),
+        _WeatherImage(weatherCondition: weatherInfo?.weatherCondition),
         Row(
           children: [
             Expanded(
               child: _TemperatureText(
                 color: Colors.blue,
-                temperature: _weatherInfo?.minTemperature,
+                temperature: weatherInfo?.minTemperature,
               ),
             ),
             Expanded(
               child: _TemperatureText(
                 color: Colors.red,
-                temperature: _weatherInfo?.maxTemperature,
+                temperature: weatherInfo?.maxTemperature,
               ),
             ),
           ],
@@ -119,14 +108,14 @@ class _WeatherForecastResult extends StatelessWidget {
   }
 }
 
-class _WeatherImage extends StatelessWidget {
+class _WeatherImage extends ConsumerWidget {
   const _WeatherImage({required WeatherCondition? weatherCondition})
       : _weatherCondition = weatherCondition;
 
   final WeatherCondition? _weatherCondition;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: switch (_weatherCondition) {
@@ -140,7 +129,7 @@ class _WeatherImage extends StatelessWidget {
   }
 }
 
-class _TemperatureText extends StatelessWidget {
+class _TemperatureText extends ConsumerWidget {
   const _TemperatureText({required Color color, required int? temperature})
       : _color = color,
         _temperature = temperature;
@@ -149,7 +138,7 @@ class _TemperatureText extends StatelessWidget {
   final int? _temperature;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Text(
@@ -161,7 +150,7 @@ class _TemperatureText extends StatelessWidget {
   }
 }
 
-class _EventButton extends StatelessWidget {
+class _EventButton extends ConsumerWidget {
   const _EventButton({required String text, required void Function() onPressed})
       : _onPressed = onPressed,
         _text = text;
@@ -170,7 +159,7 @@ class _EventButton extends StatelessWidget {
   final VoidCallback _onPressed;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TextButton(
       onPressed: _onPressed,
       child: Text(
