@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_training/weather_notifier.dart';
-import 'package:flutter_training/weather_type.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter_training/model/weather_type.dart';
+import 'package:flutter_training/repository/weather_notifier.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherScreen extends ConsumerWidget {

@@ -1,7 +1,6 @@
 import 'dart:convert';
-
-import 'package:flutter_training/fetch_weather_request.dart';
-import 'package:flutter_training/weather_info.dart';
+import 'package:flutter_training/model/fetch_weather_request.dart';
+import 'package:flutter_training/model/weather_info.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
