@@ -108,14 +108,14 @@ class _WeatherForecastResult extends ConsumerWidget {
   }
 }
 
-class _WeatherImage extends ConsumerWidget {
+class _WeatherImage extends StatelessWidget {
   const _WeatherImage({required WeatherCondition? weatherCondition})
       : _weatherCondition = weatherCondition;
 
   final WeatherCondition? _weatherCondition;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: switch (_weatherCondition) {
@@ -129,7 +129,7 @@ class _WeatherImage extends ConsumerWidget {
   }
 }
 
-class _TemperatureText extends ConsumerWidget {
+class _TemperatureText extends StatelessWidget {
   const _TemperatureText({required Color color, required int? temperature})
       : _color = color,
         _temperature = temperature;
@@ -138,7 +138,7 @@ class _TemperatureText extends ConsumerWidget {
   final int? _temperature;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Text(
@@ -150,7 +150,7 @@ class _TemperatureText extends ConsumerWidget {
   }
 }
 
-class _EventButton extends ConsumerWidget {
+class _EventButton extends StatelessWidget {
   const _EventButton({required String text, required void Function() onPressed})
       : _onPressed = onPressed,
         _text = text;
@@ -159,7 +159,7 @@ class _EventButton extends ConsumerWidget {
   final VoidCallback _onPressed;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return TextButton(
       onPressed: _onPressed,
       child: Text(
