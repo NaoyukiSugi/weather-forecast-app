@@ -1,19 +1,17 @@
 import 'package:flutter_training/gen/assets.gen.dart';
 
-enum WeatherType {
+enum WeatherCondition {
   sunny,
   cloudy,
   rainy,
-  undefined,
 }
 
-extension WeatherTypeExt on WeatherType {
+extension WeatherTypeExt on WeatherCondition {
   String get assetPath {
     return switch (this) {
-      WeatherType.sunny => Assets.images.sunny,
-      WeatherType.cloudy => Assets.images.cloudy,
-      WeatherType.rainy => Assets.images.rainy,
-      WeatherType.undefined => '',
+      WeatherCondition.sunny => Assets.images.sunny,
+      WeatherCondition.cloudy => Assets.images.cloudy,
+      WeatherCondition.rainy => Assets.images.rainy,
     };
   }
 }
