@@ -6,7 +6,7 @@ enum WeatherCondition {
   rainy,
 }
 
-extension WeatherTypeExt on WeatherCondition {
+extension WeatherConditionExt on WeatherCondition {
   String get assetPath {
     return switch (this) {
       WeatherCondition.sunny => Assets.images.sunny,

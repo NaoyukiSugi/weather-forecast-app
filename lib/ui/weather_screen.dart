@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_training/model/weather_type.dart';
+import 'package:flutter_training/model/weather_condition.dart';
 import 'package:flutter_training/repository/weather_notifier.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
