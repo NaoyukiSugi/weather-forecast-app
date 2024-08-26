@@ -5,7 +5,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_training/model/weather_condition.dart';
 import 'package:flutter_training/model/weather_exception.dart';
 import 'package:flutter_training/repository/weather_notifier.dart';
-import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
