@@ -10,7 +10,7 @@ part 'generated/weather_repository.g.dart';
 
 @riverpod
 WeatherRepository weatherRepository(WeatherRepositoryRef ref) =>
-    WeatherRepository(ref.read(yumemiWeatherProvider));
+    WeatherRepository(ref.watch(yumemiWeatherProvider));
 
 class WeatherRepository {
   WeatherRepository(this._yumemiWeather);
