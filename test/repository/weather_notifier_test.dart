@@ -41,7 +41,7 @@ void main() {
     });
 
     test('''
-        state is not updated and throws exception when repository throws
+        throws exception and state is not updated when repository throws
         exception
         ''', () {
       final container = createContainer(
@@ -50,14 +50,14 @@ void main() {
 
       when(repository.fetchWeather()).thenThrow(UnknownException());
 
-      expect(container.read(weatherNotifierProvider), null);
-
       expect(
         () {
           container.read(weatherNotifierProvider.notifier).fetchWeather();
         },
         throwsA(isA<UnknownException>()),
       );
+
+      expect(container.read(weatherNotifierProvider), null);
     });
   });
 }
