@@ -2,27 +2,26 @@
 
 // ignore_for_file: type=lint, duplicate_ignore
 
-part of '../weather_repository.dart';
+part of '../yumemi_weather.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$weatherRepositoryHash() => r'8bcd964600f2dbeae9958b79c5f31ca53fb6fe77';
+String _$yumemiWeatherHash() => r'60e3e1a36fb4a27ee07aa44531ee1f0e1df18907';
 
-/// See also [weatherRepository].
-@ProviderFor(weatherRepository)
-final weatherRepositoryProvider =
-    AutoDisposeProvider<WeatherRepository>.internal(
-  weatherRepository,
-  name: r'weatherRepositoryProvider',
+/// See also [yumemiWeather].
+@ProviderFor(yumemiWeather)
+final yumemiWeatherProvider = AutoDisposeProvider<YumemiWeather>.internal(
+  yumemiWeather,
+  name: r'yumemiWeatherProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$weatherRepositoryHash,
+      : _$yumemiWeatherHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef WeatherRepositoryRef = AutoDisposeProviderRef<WeatherRepository>;
+typedef YumemiWeatherRef = AutoDisposeProviderRef<YumemiWeather>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
