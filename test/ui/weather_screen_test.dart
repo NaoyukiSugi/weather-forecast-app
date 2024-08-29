@@ -55,4 +55,31 @@ void main() {
       );
     }
   });
+
+  testWidgets('temperature test', (tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          weatherRepositoryProvider.overrideWithValue(repository),
+        ],
+        child: const MaterialApp(
+          home: Scaffold(
+            body: WeatherScreen(),
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(maxTemperatureKey),
+      findsOneWidget,
+    );
+
+    expect(
+      find.byKey(minTemperatureKey),
+      findsOneWidget,
+    );
+  });
 }
