@@ -6,6 +6,10 @@ import 'package:flutter_training/model/weather_condition.dart';
 import 'package:flutter_training/model/weather_exception.dart';
 import 'package:flutter_training/repository/weather_notifier.dart';
 
+const reloadButtonKey = Key('reload_button');
+const minTemperatureKey = Key('min_temperature');
+const maxTemperatureKey = Key('max_temperature');
+
 class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
 
@@ -35,6 +39,7 @@ class WeatherScreen extends ConsumerWidget {
                       ),
                       Expanded(
                         child: _EventButton(
+                          key: reloadButtonKey,
                           text: 'Reload',
                           onPressed: () {
                             try {
@@ -91,12 +96,14 @@ class _WeatherForecastResult extends ConsumerWidget {
           children: [
             Expanded(
               child: _TemperatureText(
+                key: minTemperatureKey,
                 color: Colors.blue,
                 temperature: weatherInfo?.minTemperature,
               ),
             ),
             Expanded(
               child: _TemperatureText(
+                key: maxTemperatureKey,
                 color: Colors.red,
                 temperature: weatherInfo?.maxTemperature,
               ),
@@ -117,6 +124,7 @@ class _WeatherImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
+      key: const Key('weather_image'),
       aspectRatio: 1 / 1,
       child: switch (_weatherCondition) {
         null => const Placeholder(),
@@ -130,10 +138,12 @@ class _WeatherImage extends StatelessWidget {
 }
 
 class _TemperatureText extends StatelessWidget {
-  const _TemperatureText({required Color color, required int? temperature})
-      : _color = color,
+  const _TemperatureText({
+    required Color color,
+    required int? temperature,
+    super.key,
+  })  : _color = color,
         _temperature = temperature;
-
   final Color _color;
   final int? _temperature;
 
@@ -151,8 +161,11 @@ class _TemperatureText extends StatelessWidget {
 }
 
 class _EventButton extends StatelessWidget {
-  const _EventButton({required String text, required void Function() onPressed})
-      : _onPressed = onPressed,
+  const _EventButton({
+    required String text,
+    required void Function() onPressed,
+    super.key,
+  })  : _onPressed = onPressed,
         _text = text;
 
   final String _text;
