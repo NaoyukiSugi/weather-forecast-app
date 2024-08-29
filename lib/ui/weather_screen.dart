@@ -6,9 +6,13 @@ import 'package:flutter_training/model/weather_condition.dart';
 import 'package:flutter_training/model/weather_exception.dart';
 import 'package:flutter_training/repository/weather_notifier.dart';
 
+@visibleForTesting
 const reloadButtonKey = Key('reload_button');
+@visibleForTesting
 const minTemperatureKey = Key('min_temperature');
+@visibleForTesting
 const maxTemperatureKey = Key('max_temperature');
+@visibleForTesting
 const errorDialogKey = Key('error_dialog');
 
 class WeatherScreen extends ConsumerWidget {
