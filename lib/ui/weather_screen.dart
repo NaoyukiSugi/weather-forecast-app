@@ -9,6 +9,7 @@ import 'package:flutter_training/repository/weather_notifier.dart';
 const reloadButtonKey = Key('reload_button');
 const minTemperatureKey = Key('min_temperature');
 const maxTemperatureKey = Key('max_temperature');
+const errorDialogKey = Key('error_dialog');
 
 class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
@@ -69,6 +70,7 @@ Future<void> _showErrorDialog(BuildContext context) async {
     context: context,
     builder: (context) {
       return AlertDialog(
+        key: errorDialogKey,
         title: const Text('エラー'),
         content: const Text('エラーが発生しました'),
         actions: [
