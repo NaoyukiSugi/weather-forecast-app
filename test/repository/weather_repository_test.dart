@@ -19,7 +19,7 @@ void main() {
   });
 
   group('when fetchWeather is called', () {
-    test('returns WeatherInfo when API returns valid response', () {
+    test('returns WeatherInfo when API returns valid response', () async {
       const weatherInfoJsonString = '''
       {
         "weather_condition": "sunny",
@@ -29,14 +29,15 @@ void main() {
       }
       ''';
 
-      when(yumemiWeather.fetchWeather(any)).thenReturn(weatherInfoJsonString);
+      when(yumemiWeather.syncFetchWeather(any))
+          .thenReturn(weatherInfoJsonString);
 
       final container = createContainer(
         overrides: [yumemiWeatherProvider.overrideWithValue(yumemiWeather)],
       );
 
       expect(
-        container.read(weatherRepositoryProvider).fetchWeather(),
+        await container.read(weatherRepositoryProvider).fetchWeather(),
         equals(
           const WeatherInfo(
             weatherCondition: WeatherCondition.sunny,
@@ -47,8 +48,8 @@ void main() {
       );
     });
 
-    test('throws UnknownException when API throws unknown error', () {
-      when(yumemiWeather.fetchWeather(any))
+    test('throws UnknownException when API throws unknown error', () async {
+      when(yumemiWeather.syncFetchWeather(any))
           .thenThrow(YumemiWeatherError.unknown);
 
       final container = createContainer(
@@ -64,8 +65,8 @@ void main() {
 
   test(
       'throws InvalidParameterException when API throws invalidParameter error',
-      () {
-    when(yumemiWeather.fetchWeather(any))
+      () async {
+    when(yumemiWeather.syncFetchWeather(any))
         .thenThrow(YumemiWeatherError.invalidParameter);
 
     final container = createContainer(
