@@ -9,12 +9,13 @@ class WeatherNotifier extends _$WeatherNotifier {
   late final WeatherRepository _repository;
 
   @override
-  WeatherInfo? build() {
+  Future<WeatherInfo?> build() async {
     _repository = ref.read(weatherRepositoryProvider);
     return null;
   }
 
-  void fetchWeather() {
-    state = _repository.fetchWeather();
+  Future<void> fetchWeather() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(_repository.fetchWeather);
   }
 }

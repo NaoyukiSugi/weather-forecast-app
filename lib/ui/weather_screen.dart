@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_training/model/weather_condition.dart';
-import 'package:flutter_training/model/weather_exception.dart';
 import 'package:flutter_training/repository/weather_notifier.dart';
+import 'package:flutter_training/ui/common/loading_indicator.dart';
 
 @visibleForTesting
 const reloadButtonKey = Key('reload_button');
@@ -20,51 +20,59 @@ class WeatherScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      body: Center(
-        child: FractionallySizedBox(
-          widthFactor: 0.5,
-          child: Column(
-            children: [
-              const Spacer(),
-              const _WeatherForecastResult(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 80),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: _EventButton(
-                          text: 'Close',
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
+    ref.listen(weatherNotifierProvider, (_, next) async {
+      if (next is AsyncError) {
+        await _showErrorDialog(context);
+      }
+    });
+
+    return Stack(
+      children: [
+        Scaffold(
+          body: Center(
+            child: FractionallySizedBox(
+              widthFactor: 0.5,
+              child: Column(
+                children: [
+                  const Spacer(),
+                  const _WeatherForecastResult(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 80),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: _EventButton(
+                              text: 'Close',
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: _EventButton(
+                              key: reloadButtonKey,
+                              text: 'Reload',
+                              onPressed: () async {
+                                await ref
+                                    .read(weatherNotifierProvider.notifier)
+                                    .fetchWeather();
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: _EventButton(
-                          key: reloadButtonKey,
-                          text: 'Reload',
-                          onPressed: () {
-                            try {
-                              ref
-                                  .read(weatherNotifierProvider.notifier)
-                                  .fetchWeather();
-                            } on WeatherException catch (_) {
-                              unawaited(_showErrorDialog(context));
-                            }
-                          },
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        if (ref.watch(weatherNotifierProvider).isLoading)
+          const LoadingIndicator(),
+      ],
     );
   }
 }
@@ -93,7 +101,8 @@ class _WeatherForecastResult extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weatherInfo = ref.watch(weatherNotifierProvider);
+    final weatherInfo =
+        ref.watch(weatherNotifierProvider.select((value) => value.valueOrNull));
 
     return Column(
       children: [
