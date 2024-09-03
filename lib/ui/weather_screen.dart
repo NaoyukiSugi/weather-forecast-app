@@ -14,6 +14,8 @@ const minTemperatureKey = Key('min_temperature');
 const maxTemperatureKey = Key('max_temperature');
 @visibleForTesting
 const errorDialogKey = Key('error_dialog');
+@visibleForTesting
+const loadingIndicatorKey = Key('loading_indicator');
 
 class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
@@ -26,10 +28,10 @@ class WeatherScreen extends ConsumerWidget {
       }
     });
 
-    return Stack(
-      children: [
-        Scaffold(
-          body: Center(
+    return Scaffold(
+      body: Stack(
+        children: [
+          Center(
             child: FractionallySizedBox(
               widthFactor: 0.5,
               child: Column(
@@ -69,10 +71,10 @@ class WeatherScreen extends ConsumerWidget {
               ),
             ),
           ),
-        ),
-        if (ref.watch(weatherNotifierProvider).isLoading)
-          const LoadingIndicator(),
-      ],
+          if (ref.watch(weatherNotifierProvider).isLoading)
+            const LoadingIndicator(key: loadingIndicatorKey),
+        ],
+      ),
     );
   }
 }
