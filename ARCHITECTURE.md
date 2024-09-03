@@ -24,8 +24,10 @@ flowchart TB
   WeatherScreen((WeatherScreen));
   _WeatherForecastResult((_WeatherForecastResult));
 
+  weatherNotifierProvider ==> WeatherScreen;
+  weatherNotifierProvider --> WeatherScreen;
   weatherNotifierProvider -.-> WeatherScreen;
   weatherNotifierProvider ==> _WeatherForecastResult;
   weatherRepositoryProvider -.-> weatherNotifierProvider;
-  yumemiWeatherProvider -.-> weatherRepositoryProvider;
+  yumemiWeatherProvider ==> weatherRepositoryProvider;
 ```
