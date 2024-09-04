@@ -19,7 +19,7 @@ void main() {
   });
 
   group('when fetchWeather is called', () {
-    test('state is updated when repository returns response', () {
+    test('state is updated when repository returns response', () async {
       final container = createContainer(
         overrides: [weatherRepositoryProvider.overrideWithValue(repository)],
       );
@@ -30,12 +30,12 @@ void main() {
         minTemperature: 0,
       );
 
-      when(repository.fetchWeather()).thenReturn(weatherInfo);
+      when(repository.fetchWeather()).thenAnswer((_) async => weatherInfo);
 
-      container.read(weatherNotifierProvider.notifier).fetchWeather();
+      await container.read(weatherNotifierProvider.notifier).fetchWeather();
 
       expect(
-        container.read(weatherNotifierProvider),
+        container.read(weatherNotifierProvider).value,
         weatherInfo,
       );
     });
@@ -43,21 +43,21 @@ void main() {
     test('''
         throws exception and state is not updated when repository throws
         exception
-        ''', () {
+        ''', () async {
       final container = createContainer(
         overrides: [weatherRepositoryProvider.overrideWithValue(repository)],
       );
 
       when(repository.fetchWeather()).thenThrow(UnknownException());
 
+      await container.read(weatherNotifierProvider.notifier).fetchWeather();
+
       expect(
-        () {
-          container.read(weatherNotifierProvider.notifier).fetchWeather();
-        },
-        throwsA(isA<UnknownException>()),
+        container.read(weatherNotifierProvider).error,
+        isA<UnknownException>(),
       );
 
-      expect(container.read(weatherNotifierProvider), null);
+      expect(container.read(weatherNotifierProvider).value, null);
     });
   });
 }

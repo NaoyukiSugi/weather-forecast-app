@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_training/model/fetch_weather_request.dart';
 import 'package:flutter_training/model/weather_exception.dart';
 import 'package:flutter_training/model/weather_info.dart';
@@ -17,11 +18,14 @@ class WeatherRepository {
 
   final YumemiWeather _yumemiWeather;
 
-  WeatherInfo fetchWeather() {
+  Future<WeatherInfo> fetchWeather() async {
     final request = FetchWeatherRequest(area: 'tokyo', date: DateTime.now());
 
     try {
-      final response = _yumemiWeather.fetchWeather(jsonEncode(request));
+      final response = await compute(
+        _yumemiWeather.syncFetchWeather,
+        jsonEncode(request),
+      );
       return WeatherInfo.fromJson(jsonDecode(response) as Map<String, dynamic>);
     } on YumemiWeatherError catch (e) {
       switch (e) {

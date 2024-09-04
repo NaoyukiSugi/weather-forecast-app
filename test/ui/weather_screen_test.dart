@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -30,7 +32,11 @@ void main() {
         maxTemperature: 0,
         minTemperature: 0,
       );
-      when(repository.fetchWeather()).thenReturn(weatherInfo);
+
+      final fetchWeatherCompleter = Completer<WeatherInfo>();
+
+      when(repository.fetchWeather())
+          .thenAnswer((_) => fetchWeatherCompleter.future);
 
       final asset = SvgPicture.asset(weather.assetPath);
 
@@ -47,7 +53,17 @@ void main() {
         ),
       );
 
+      await tester.pump();
+
       await tester.tap(find.byKey(reloadButtonKey));
+      await tester.pump();
+
+      expect(
+        find.byKey(loadingIndicatorKey),
+        findsOneWidget,
+      );
+
+      fetchWeatherCompleter.complete(weatherInfo);
       await tester.pump();
 
       expect(
@@ -74,6 +90,8 @@ void main() {
         ),
       ),
     );
+
+    await tester.pump();
 
     await tester.tap(find.byKey(reloadButtonKey));
     await tester.pump();
@@ -104,6 +122,8 @@ void main() {
         ),
       ),
     );
+
+    await tester.pump();
 
     expect(
       find.byKey(maxTemperatureKey),
